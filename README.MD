@@ -1,96 +1,236 @@
 # Painel de Acidentes
 
-API REST para visualização e análise de acidentes de trânsito utilizando geolocalização.
+API REST para importar, consultar e analisar acidentes de trânsito utilizando
+dados geográficos.
 
-O projeto importa registros através de um arquivo CSV, realiza o tratamento dos dados e disponibiliza uma API para consulta. Os acidentes são apresentados em um mapa interativo, permitindo análises por localização e período.
+O projeto processa arquivos CSV, valida os registros com Pandas e Pydantic,
+armazena os dados no PostgreSQL e disponibiliza consultas e indicadores por
+meio do FastAPI.
 
-> Projeto em desenvolvimento.
+> Projeto em desenvolvimento. O backend está disponível; o frontend e o mapa
+> ainda serão implementados.
 
----
-
-# Funcionalidades
+## Funcionalidades implementadas
 
 - Importação de acidentes por CSV
-- Tratamento e validação dos dados
+- Validação individual dos registros
+- Descarte de registros inválidos sem interromper toda a importação
 - Armazenamento em PostgreSQL
+- Migrations com Alembic
 - Consulta de acidentes
-- Filtros por bairro
-- Filtros por tipo de acidente
-- Filtros por gravidade
-- Filtros por período
-- Dashboard com indicadores
-- Visualização dos acidentes em mapa
+- Consulta por identificador
+- Indicadores por tipo e gravidade
+- Quantidade de acidentes por bairro
+- Filtros combináveis por bairro, tipo, gravidade e período
+- Documentação automática com Swagger e OpenAPI
+- Execução com Docker Compose
 
----
+## Funcionalidades planejadas
 
-# Tecnologias
+- Frontend em React e TypeScript
+- Mapa interativo com Leaflet e OpenStreetMap
+- Paginação
+- Upload de CSV pela API
+- Exportação de dados
+- Testes automatizados
 
-## Backend
+## Tecnologias
 
-- Python
+### Backend
+
+- Python 3.13+
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
 - Pandas
 - Pydantic
+- Alembic
 - Docker Compose
 
-## Frontend
+### Frontend planejado
 
 - React
 - TypeScript
+- Vite
 - Leaflet
 - OpenStreetMap
 
----
-
-# Estrutura do projeto
+## Estrutura do projeto
 
 ```text
 backend/
+    alembic/
+        versions/
+    app/
+        api/
+        database/
+        models/
+        repositories/
+        schemas/
+        services/
+        utils/
+    Dockerfile
+data/
+    acidentes_exemplo.csv
+    acidentes_com_erros.csv
 frontend/
+alembic.ini
 docker-compose.yml
-README.md
+requirements.txt
 ```
 
----
+## Configuração
 
-# Estrutura do CSV
+Crie o arquivo de variáveis de ambiente:
 
-O projeto utiliza um arquivo CSV contendo os registros dos acidentes.
+```bash
+cp .env.example .env
+```
 
-Exemplo:
+Os valores do `.env.example` são destinados somente ao ambiente local de
+desenvolvimento.
+
+## Executando com Docker
+
+Construa a imagem da API:
+
+```bash
+docker compose build api
+```
+
+Inicie o PostgreSQL:
+
+```bash
+docker compose up -d db
+```
+
+Crie a tabela de acidentes:
+
+```bash
+docker compose run --rm api alembic upgrade head
+```
+
+Inicie a API:
+
+```bash
+docker compose up -d api
+```
+
+A aplicação ficará disponível nos seguintes endereços:
+
+- Swagger: http://localhost:8000/docs
+- OpenAPI: http://localhost:8000/openapi.json
+
+Para acompanhar os contêineres:
+
+```bash
+docker compose ps
+docker compose logs -f api
+```
+
+Para interromper os serviços:
+
+```bash
+docker compose down
+```
+
+O volume do PostgreSQL é preservado por esse comando.
+
+## Estrutura do CSV
+
+O arquivo deve utilizar ponto e vírgula como separador e possuir estas colunas:
 
 ```csv
-id;data;hora;tipo;gravidade;bairro;latitude;longitude
-1;2026-01-10;08:30;Colisão;Leve;Centro;-22.9068;-43.1729
-2;2026-01-11;18:45;Atropelamento;Grave;Tijuca;-22.9249;-43.2322
+data;hora;tipo;gravidade;bairro;logradouro;latitude;longitude
+2026-01-10;08:30;Colisão;Leve;Centro;Avenida Rio Branco;-22.905411;-43.177580
+2026-01-18;21:15;Atropelamento;Grave;Copacabana;Avenida Atlântica;-22.976851;-43.188144
 ```
 
----
+Regras principais:
 
-# Endpoints previstos
+- `data` deve seguir o formato `AAAA-MM-DD`;
+- `hora` deve seguir o formato `HH:MM`;
+- `logradouro`, `bairro`, `tipo` e `gravidade` são obrigatórios;
+- latitude deve estar entre `-90` e `90`;
+- longitude deve estar entre `-180` e `180`;
+- ponto ou vírgula são aceitos como separador decimal;
+- o `id` não deve ser informado, pois é gerado pelo PostgreSQL.
 
-```text
-GET    /acidentes
-GET    /acidentes/{id}
+Os arquivos em `data/` utilizam vias, bairros e coordenadas reais do município
+do Rio de Janeiro. Os acidentes são inteiramente fictícios.
 
-GET    /dashboard/resumo
-GET    /dashboard/bairros
+## Importando os dados
 
-POST   /importacoes/csv
+Para importar o arquivo válido de exemplo:
+
+```bash
+docker compose run --rm api \
+  python -m backend.app.utils.importar_csv data/acidentes_exemplo.csv
 ```
 
----
+O comando retorna um resumo:
 
-# Objetivo
+```json
+{
+  "total": 9,
+  "importados": 9,
+  "ignorados": 0,
+  "erros": []
+}
+```
 
-Construir uma aplicação simples, organizada e escalável para demonstrar:
+O arquivo `data/acidentes_com_erros.csv` pode ser usado para observar o
+descarte de linhas inválidas:
+
+```bash
+docker compose run --rm api \
+  python -m backend.app.utils.importar_csv data/acidentes_com_erros.csv
+```
+
+Executar novamente o mesmo arquivo insere novos registros, pois a aplicação
+ainda não possui uma regra para identificar acidentes duplicados.
+
+## Endpoints
+
+| Método | Caminho | Descrição |
+|---|---|---|
+| `GET` | `/acidentes` | Lista os acidentes |
+| `GET` | `/acidentes/{id}` | Busca um acidente pelo ID |
+| `GET` | `/dashboard/resumo` | Retorna totais por tipo e gravidade |
+| `GET` | `/dashboard/bairros` | Agrupa a quantidade por bairro |
+
+Uma busca por ID inexistente retorna HTTP `404`.
+
+## Filtros
+
+Os endpoints `/acidentes`, `/dashboard/resumo` e `/dashboard/bairros` aceitam:
+
+| Parâmetro | Descrição | Exemplo |
+|---|---|---|
+| `bairro` | Nome exato do bairro | `Centro` |
+| `gravidade` | Gravidade exata | `Grave` |
+| `tipo` | Tipo exato do acidente | `Colisão` |
+| `data_inicio` | Início do período | `2026-01-01` |
+| `data_fim` | Fim do período | `2026-12-31` |
+
+Os filtros de texto não diferenciam letras maiúsculas e minúsculas. Todos os
+parâmetros são opcionais e podem ser combinados:
+
+```http
+GET /acidentes?bairro=centro&gravidade=leve&tipo=colisão&data_inicio=2026-01-01&data_fim=2026-12-31
+```
+
+Quando as duas datas forem informadas, `data_inicio` deverá ser anterior ou
+igual a `data_fim`.
+
+## Objetivo
+
+Construir uma aplicação simples, organizada e de fácil manutenção para
+demonstrar:
 
 - desenvolvimento de APIs com FastAPI;
-- processamento de arquivos CSV utilizando Pandas;
-- integração com PostgreSQL;
-- utilização de mapas com Leaflet;
-- boas práticas de arquitetura e organização de projetos.
-
----
+- processamento de arquivos CSV com Pandas;
+- validação de dados com Pydantic;
+- integração com PostgreSQL e SQLAlchemy;
+- separação entre rotas, serviços, repositórios, schemas e modelos;
+- consultas geográficas e visualização futura em mapa.
