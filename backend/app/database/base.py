@@ -2,5 +2,4 @@ from sqlalchemy.orm import DeclarativeBase
 
 
 class Base(DeclarativeBase):
-    """Classe base dos futuros modelos SQLAlchemy."""
-
+    """Classe base dos modelos SQLAlchemy."""

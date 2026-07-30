@@ -3,8 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     postgres_db: str = "painel_acidentes"
-    postgres_user: str = "painel"
-    postgres_password: str = "painel"
+    postgres_user: str = "admin"
+    postgres_password: str = "roger"
     postgres_host: str = "localhost"
     postgres_port: int = 5432
 
@@ -24,4 +24,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
