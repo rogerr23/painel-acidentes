@@ -1,0 +1,7 @@
+data;hora;tipo;gravidade;bairro;logradouro;latitude;longitude
+2026-05-12;10:20;Colisão;Leve;Centro;Avenida Rio Branco;-22.905411;-43.177580
+12/05/2026;14:00;Atropelamento;Grave;Copacabana;Avenida Atlântica;-22.976851;-43.188144
+2026-05-14;25:70;Colisão;Moderada;Ipanema;Rua Visconde de Pirajá;-22.984037;-43.208755
+2026-05-15;09:30;Engavetamento;Leve;;Rua Marquês de São Vicente;-22.977164;-43.230673
+2026-05-16;18:45;Queda de motocicleta;Moderada;Tijuca;Rua Conde de Bonfim;texto;-43.234919
+2026-05-17;07:10;Colisão;Grave;Barra da Tijuca;Avenida das Américas;-95.000000;-43.356193

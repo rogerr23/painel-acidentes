@@ -1,0 +1,10 @@
+data;hora;tipo;gravidade;bairro;logradouro;latitude;longitude
+2026-01-10;08:30;Colisão;Leve;Centro;Avenida Rio Branco;-22.905411;-43.177580
+2026-01-18;21:15;Atropelamento;Grave;Copacabana;Avenida Atlântica;-22.976851;-43.188144
+2026-02-03;13:40;Queda de motocicleta;Moderada;Ipanema;Rua Visconde de Pirajá;-22.984037;-43.208755
+2026-02-21;07:05;Colisão;Moderada;Gávea;Rua Marquês de São Vicente;-22.977164;-43.230673
+2026-03-09;17:50;Engavetamento;Leve;Jardim Botânico;Rua Jardim Botânico;-22.961251;-43.212568
+2026-03-22;11:20;Colisão;Grave;Botafogo;Rua Voluntários da Pátria;-22.950909;-43.182929
+2026-04-07;19:35;Atropelamento;Moderada;Tijuca;Rua Conde de Bonfim;-22.926012;-43.234919
+2026-04-19;15:10;Queda de motocicleta;Leve;Méier;Rua Dias da Cruz;-22.904161;-43.285446
+2026-05-02;09:55;Engavetamento;Moderada;Barra da Tijuca;Avenida das Américas;-23.000297;-43.356193
