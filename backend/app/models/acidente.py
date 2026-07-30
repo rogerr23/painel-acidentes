@@ -18,5 +18,6 @@ class Acidente(Base):
     tipo: Mapped[str] = mapped_column(String(100), nullable=False)
     gravidade: Mapped[str] = mapped_column(String(50), nullable=False)
     bairro: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    logradouro: Mapped[str] = mapped_column(String(200), nullable=False)
     latitude: Mapped[Decimal] = mapped_column(Numeric(9, 6), nullable=False)
     longitude: Mapped[Decimal] = mapped_column(Numeric(10, 6), nullable=False)

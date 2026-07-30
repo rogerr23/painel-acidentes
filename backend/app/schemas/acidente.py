@@ -12,6 +12,7 @@ class AcidenteBase(BaseModel):
     tipo: str = Field(min_length=1, max_length=100)
     gravidade: str = Field(min_length=1, max_length=50)
     bairro: str = Field(min_length=1, max_length=120)
+    logradouro: str = Field(min_length=1, max_length=200)
     latitude: Decimal = Field(
         ge=Decimal("-90"),
         le=Decimal("90"),

@@ -27,6 +27,7 @@ def upgrade() -> None:
         sa.Column("tipo", sa.String(length=100), nullable=False),
         sa.Column("gravidade", sa.String(length=50), nullable=False),
         sa.Column("bairro", sa.String(length=120), nullable=False),
+        sa.Column("logradouro", sa.String(length=200), nullable=False),
         sa.Column("latitude", sa.Numeric(precision=9, scale=6), nullable=False),
         sa.Column("longitude", sa.Numeric(precision=10, scale=6), nullable=False),
         sa.PrimaryKeyConstraint("id"),
