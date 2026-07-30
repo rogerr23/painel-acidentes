@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, status
+from fastapi import APIRouter, HTTPException, Path, Query, status
 
 from backend.app.api.dependencies import SessionDependency
 from backend.app.models.acidente import Acidente
 from backend.app.schemas.acidente import AcidenteResponse
+from backend.app.schemas.filtros import FiltrosAcidente
 from backend.app.services.acidente_service import AcidenteService
 
 
@@ -13,9 +14,12 @@ service = AcidenteService()
 
 
 @router.get("", response_model=list[AcidenteResponse])
-def listar_acidentes(session: SessionDependency) -> list[Acidente]:
+def listar_acidentes(
+    session: SessionDependency,
+    filtros: Annotated[FiltrosAcidente, Query()],
+) -> list[Acidente]:
     """Lista todos os acidentes cadastrados."""
-    return service.listar(session)
+    return service.listar(session, filtros)
 
 
 @router.get("/{acidente_id}", response_model=AcidenteResponse)

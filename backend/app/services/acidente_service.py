@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from backend.app.models.acidente import Acidente
 from backend.app.repositories.acidente_repository import AcidenteRepository
+from backend.app.schemas.filtros import FiltrosAcidente
 
 
 class AcidenteService:
@@ -10,8 +11,12 @@ class AcidenteService:
     def __init__(self, repository: type[AcidenteRepository] = AcidenteRepository):
         self.repository = repository
 
-    def listar(self, session: Session) -> list[Acidente]:
-        return self.repository.listar(session)
+    def listar(
+        self,
+        session: Session,
+        filtros: FiltrosAcidente,
+    ) -> list[Acidente]:
+        return self.repository.listar(session, filtros)
 
     def buscar_por_id(
         self,

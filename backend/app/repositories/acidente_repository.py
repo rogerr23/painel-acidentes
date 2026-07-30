@@ -4,15 +4,21 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.app.models.acidente import Acidente
+from backend.app.repositories.filtros import aplicar_filtros
 from backend.app.schemas.acidente import AcidenteCreate
+from backend.app.schemas.filtros import FiltrosAcidente
 
 
 class AcidenteRepository:
     """Operações de persistência dos acidentes."""
 
     @staticmethod
-    def listar(session: Session) -> list[Acidente]:
+    def listar(
+        session: Session,
+        filtros: FiltrosAcidente,
+    ) -> list[Acidente]:
         consulta = select(Acidente).order_by(Acidente.id)
+        consulta = aplicar_filtros(consulta, filtros)
         return list(session.scalars(consulta).all())
 
     @staticmethod
