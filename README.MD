@@ -223,6 +223,49 @@ GET /acidentes?bairro=centro&gravidade=leve&tipo=colisão&data_inicio=2026-01-01
 Quando as duas datas forem informadas, `data_inicio` deverá ser anterior ou
 igual a `data_fim`.
 
+## Testes
+
+Instale as dependências de desenvolvimento:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Inicie o PostgreSQL isolado para testes:
+
+```bash
+docker compose --profile test up -d db_test
+```
+
+Esse serviço utiliza a porta `5433`, banco próprio e armazenamento temporário.
+Ele não altera os registros do PostgreSQL de desenvolvimento.
+
+Execute a suíte:
+
+```bash
+pytest
+```
+
+Para gerar o relatório de cobertura:
+
+```bash
+pytest --cov=backend.app --cov-report=term-missing
+```
+
+Para interromper o banco de testes:
+
+```bash
+docker compose stop db_test
+```
+
+Por padrão, os testes usam esta conexão:
+
+```text
+postgresql+psycopg://admin:roger@localhost:5433/painel_acidentes_test
+```
+
+Ela pode ser substituída por meio da variável `TEST_DATABASE_URL`.
+
 ## Objetivo
 
 Construir uma aplicação simples, organizada e de fácil manutenção para
