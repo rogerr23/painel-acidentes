@@ -22,6 +22,9 @@ meio do FastAPI.
 - Indicadores por tipo e gravidade
 - Quantidade de acidentes por bairro
 - Filtros combináveis por bairro, tipo, gravidade e período
+- Paginação da consulta de acidentes
+- Opções de filtros fornecidas pela API
+- CORS configurado para o frontend local
 - Documentação automática com Swagger e OpenAPI
 - Execução com Docker Compose
 
@@ -29,7 +32,6 @@ meio do FastAPI.
 
 - Frontend em React e TypeScript
 - Mapa interativo com Leaflet e OpenStreetMap
-- Paginação
 - Upload de CSV pela API
 - Exportação de dados
 - Testes automatizados
@@ -172,8 +174,8 @@ O comando retorna um resumo:
 
 ```json
 {
-  "total": 9,
-  "importados": 9,
+  "total": 50,
+  "importados": 50,
   "ignorados": 0,
   "erros": []
 }
@@ -195,11 +197,28 @@ ainda não possui uma regra para identificar acidentes duplicados.
 | Método | Caminho | Descrição |
 |---|---|---|
 | `GET` | `/acidentes` | Lista os acidentes |
+| `GET` | `/acidentes/filtros/opcoes` | Lista bairros, tipos e gravidades disponíveis |
 | `GET` | `/acidentes/{id}` | Busca um acidente pelo ID |
 | `GET` | `/dashboard/resumo` | Retorna totais por tipo e gravidade |
 | `GET` | `/dashboard/bairros` | Agrupa a quantidade por bairro |
 
 Uma busca por ID inexistente retorna HTTP `404`.
+
+### Paginação
+
+`GET /acidentes` retorna os registros no campo `items` e os metadados
+`pagina`, `por_pagina`, `total` e `total_paginas`. A página padrão é `1`, com
+`20` registros. O limite permitido para `por_pagina` é `100`.
+
+```http
+GET /acidentes?pagina=2&por_pagina=20
+```
+
+O frontend pode preencher seus seletores consultando:
+
+```http
+GET /acidentes/filtros/opcoes
+```
 
 ## Filtros
 
@@ -222,6 +241,16 @@ GET /acidentes?bairro=centro&gravidade=leve&tipo=colisão&data_inicio=2026-01-01
 
 Quando as duas datas forem informadas, `data_inicio` deverá ser anterior ou
 igual a `data_fim`.
+
+## Acesso pelo frontend
+
+Por padrão, a API aceita requisições do Vite em `http://localhost:5173` e
+`http://127.0.0.1:5173`. Em outros ambientes, configure `CORS_ORIGINS` como
+uma lista JSON:
+
+```env
+CORS_ORIGINS=["https://painel.exemplo.com"]
+```
 
 ## Testes
 

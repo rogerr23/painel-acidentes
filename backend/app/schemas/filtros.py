@@ -28,3 +28,10 @@ class FiltrosAcidente(BaseModel):
                 "data_inicio deve ser anterior ou igual a data_fim."
             )
         return self
+
+
+class ConsultaAcidentes(FiltrosAcidente):
+    """Filtros e paginação aceitos pela listagem de acidentes."""
+
+    pagina: int = Field(default=1, ge=1)
+    por_pagina: int = Field(default=20, ge=1, le=100)

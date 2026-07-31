@@ -1,5 +1,6 @@
 from datetime import date, time
 from decimal import Decimal
+from math import ceil
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -37,3 +38,37 @@ class AcidenteResponse(AcidenteBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AcidentesPaginados(BaseModel):
+    """Página de acidentes acompanhada dos metadados de navegação."""
+
+    items: list[AcidenteResponse]
+    pagina: int = Field(ge=1)
+    por_pagina: int = Field(ge=1)
+    total: int = Field(ge=0)
+    total_paginas: int = Field(ge=0)
+
+    @classmethod
+    def criar(
+        cls,
+        items: list[AcidenteResponse],
+        pagina: int,
+        por_pagina: int,
+        total: int,
+    ) -> "AcidentesPaginados":
+        return cls(
+            items=items,
+            pagina=pagina,
+            por_pagina=por_pagina,
+            total=total,
+            total_paginas=ceil(total / por_pagina),
+        )
+
+
+class OpcoesFiltrosAcidente(BaseModel):
+    """Valores existentes que podem preencher os seletores do frontend."""
+
+    bairros: list[str]
+    gravidades: list[str]
+    tipos: list[str]

@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from backend.app.models.acidente import Acidente
@@ -16,9 +16,29 @@ class AcidenteRepository:
     def listar(
         session: Session,
         filtros: FiltrosAcidente,
+        pagina: int,
+        por_pagina: int,
     ) -> list[Acidente]:
         consulta = select(Acidente).order_by(Acidente.id)
         consulta = aplicar_filtros(consulta, filtros)
+        consulta = consulta.offset((pagina - 1) * por_pagina).limit(por_pagina)
+        return list(session.scalars(consulta).all())
+
+    @staticmethod
+    def contar(session: Session, filtros: FiltrosAcidente) -> int:
+        consulta = aplicar_filtros(
+            select(func.count(Acidente.id)),
+            filtros,
+        )
+        return session.scalar(consulta) or 0
+
+    @staticmethod
+    def listar_valores_distintos(
+        session: Session,
+        campo: str,
+    ) -> list[str]:
+        coluna = getattr(Acidente, campo)
+        consulta = select(coluna).distinct().order_by(coluna)
         return list(session.scalars(consulta).all())
 
     @staticmethod

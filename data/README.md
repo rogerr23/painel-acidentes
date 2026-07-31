@@ -10,6 +10,7 @@ https://www.openstreetmap.org/copyright
 O CSV usa ponto e vírgula como separador, data no formato `AAAA-MM-DD`, hora no
 formato `HH:MM` e coordenadas com ponto como separador decimal.
 
-- `acidentes_exemplo.csv`: contém apenas registros válidos.
-- `acidentes_com_erros.csv`: mistura um registro válido com registros inválidos
+- `acidentes_exemplo.csv`: contém 50 registros válidos, distribuídos entre
+  janeiro de 2025 e julho de 2026.
+- `acidentes_com_erros.csv`: contém 12 registros, sendo 3 válidos e 9 inválidos,
   para demonstrar o descarte individual de linhas.

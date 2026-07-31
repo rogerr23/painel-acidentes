@@ -56,7 +56,7 @@ def test_lista_e_dashboard_permanecem_consistentes(
     assert acidentes.status_code == 200
     assert resumo.status_code == 200
     assert bairros.status_code == 200
-    assert resumo.json()["total_acidentes"] == len(acidentes.json())
+    assert resumo.json()["total_acidentes"] == len(acidentes.json()["items"])
     assert sum(item["total"] for item in bairros.json()) == len(
-        acidentes.json()
+        acidentes.json()["items"]
     )

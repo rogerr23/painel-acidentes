@@ -1,7 +1,13 @@
 data;hora;tipo;gravidade;bairro;logradouro;latitude;longitude
-2026-05-12;10:20;Colisão;Leve;Centro;Avenida Rio Branco;-22.905411;-43.177580
-12/05/2026;14:00;Atropelamento;Grave;Copacabana;Avenida Atlântica;-22.976851;-43.188144
-2026-05-14;25:70;Colisão;Moderada;Ipanema;Rua Visconde de Pirajá;-22.984037;-43.208755
-2026-05-15;09:30;Engavetamento;Leve;;Rua Marquês de São Vicente;-22.977164;-43.230673
-2026-05-16;18:45;Queda de motocicleta;Moderada;Tijuca;Rua Conde de Bonfim;texto;-43.234919
-2026-05-17;07:10;Colisão;Grave;Barra da Tijuca;Avenida das Américas;-95.000000;-43.356193
+2026-06-12;10:20;Colisão;Leve;Centro;Avenida Rio Branco;-22.905411;-43.177580
+12/06/2026;14:00;Atropelamento;Grave;Copacabana;Avenida Atlântica;-22.976851;-43.188144
+2026-06-14;25:70;Colisão;Moderada;Ipanema;Rua Visconde de Pirajá;-22.984037;-43.208755
+2026-06-15;09:30;Engavetamento;Leve;;Rua Marquês de São Vicente;-22.977164;-43.230673
+2026-06-16;18:45;Queda de motocicleta;Moderada;Tijuca;Rua Conde de Bonfim;texto;-43.234919
+2026-06-17;07:10;Colisão;Grave;Barra da Tijuca;Avenida das Américas;-95.000000;-43.356193
+2026-06-18;11:25;Atropelamento;Leve;Leblon;;-22.985261;-43.226310
+2026-06-19;20:40;Capotamento;Grave;Campo Grande;Avenida Cesário de Melo;-22.902810;200.000000
+2026-06-20;08:15;;Moderada;Catete;Rua do Catete;-22.926887;-43.176597
+2026-06-21;17:55;Engavetamento;;Cachambi;Avenida Dom Hélder Câmara;-22.884957;-43.278169
+2026-06-22;13:05;Colisão;Moderada;Laranjeiras;Rua das Laranjeiras;-22.932380;-43.182291
+2026-06-23;19:30;Atropelamento;Grave;Madureira;Rua Carvalho de Souza;-22.875669;-43.335802

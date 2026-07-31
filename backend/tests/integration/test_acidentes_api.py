@@ -8,7 +8,13 @@ def test_lista_vazia(client: TestClient) -> None:
     response = client.get("/acidentes")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert response.json() == {
+        "items": [],
+        "pagina": 1,
+        "por_pagina": 20,
+        "total": 0,
+        "total_paginas": 0,
+    }
 
 
 def test_lista_acidentes_ordenados(
@@ -21,11 +27,14 @@ def test_lista_acidentes_ordenados(
     response = client.get("/acidentes")
 
     assert response.status_code == 200
-    assert [item["id"] for item in response.json()] == [
+    payload = response.json()
+    assert [item["id"] for item in payload["items"]] == [
         primeiro.id,
         segundo.id,
     ]
-    assert response.json()[0]["logradouro"] == "Avenida Rio Branco"
+    assert payload["items"][0]["logradouro"] == "Avenida Rio Branco"
+    assert payload["total"] == 2
+    assert payload["total_paginas"] == 1
 
 
 def test_busca_acidente_por_id(
@@ -83,4 +92,103 @@ def test_aplica_filtros_combinados(
     )
 
     assert response.status_code == 200
-    assert [item["id"] for item in response.json()] == [esperado.id]
+    assert [item["id"] for item in response.json()["items"]] == [esperado.id]
+    assert response.json()["total"] == 1
+
+
+def test_pagina_acidentes(
+    client: TestClient,
+    acidente_factory: Any,
+) -> None:
+    acidentes = [acidente_factory() for _ in range(5)]
+
+    response = client.get(
+        "/acidentes",
+        params={"pagina": 2, "por_pagina": 2},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [
+            {
+                "id": acidentes[2].id,
+                "data": "2026-01-03",
+                "hora": "08:30:00",
+                "tipo": "Colisão",
+                "gravidade": "Leve",
+                "bairro": "Centro",
+                "logradouro": "Avenida Rio Branco",
+                "latitude": "-22.905411",
+                "longitude": "-43.177580",
+            },
+            {
+                "id": acidentes[3].id,
+                "data": "2026-01-04",
+                "hora": "08:30:00",
+                "tipo": "Colisão",
+                "gravidade": "Leve",
+                "bairro": "Centro",
+                "logradouro": "Avenida Rio Branco",
+                "latitude": "-22.905411",
+                "longitude": "-43.177580",
+            },
+        ],
+        "pagina": 2,
+        "por_pagina": 2,
+        "total": 5,
+        "total_paginas": 3,
+    }
+
+
+def test_rejeita_paginacao_invalida(client: TestClient) -> None:
+    response = client.get(
+        "/acidentes",
+        params={"pagina": 0, "por_pagina": 101},
+    )
+
+    assert response.status_code == 422
+
+
+def test_lista_opcoes_dos_filtros(
+    client: TestClient,
+    acidente_factory: Any,
+) -> None:
+    acidente_factory(
+        bairro="Tijuca",
+        gravidade="Grave",
+        tipo="Atropelamento",
+    )
+    acidente_factory(
+        bairro="Centro",
+        gravidade="Leve",
+        tipo="Colisão",
+    )
+    acidente_factory(
+        bairro="Centro",
+        gravidade="Leve",
+        tipo="Colisão",
+    )
+
+    response = client.get("/acidentes/filtros/opcoes")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "bairros": ["Centro", "Tijuca"],
+        "gravidades": ["Grave", "Leve"],
+        "tipos": ["Atropelamento", "Colisão"],
+    }
+
+
+def test_cors_permite_frontend_local(client: TestClient) -> None:
+    response = client.options(
+        "/acidentes",
+        headers={
+            "Origin": "http://localhost:5173",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == (
+        "http://localhost:5173"
+    )
