@@ -25,8 +25,8 @@ const acidente = {
   tipo: "Colisão",
   gravidade: "Leve",
   bairro: "Centro",
-  latitude: "-22.905411",
-  longitude: "-43.177580",
+  latitude: -22.905411,
+  longitude: -43.17758,
 };
 
 test("inicia carregando, sem erro, vazio ou marcadores antigos", () => {

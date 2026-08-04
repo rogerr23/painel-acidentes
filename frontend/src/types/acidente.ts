@@ -6,8 +6,8 @@ export interface Acidente {
   gravidade: string;
   bairro: string;
   logradouro: string;
-  latitude?: string;
-  longitude?: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface AcidenteMapa {
@@ -17,8 +17,8 @@ export interface AcidenteMapa {
   tipo: string;
   gravidade: string;
   bairro: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface FiltrosAcidente {

@@ -509,19 +509,29 @@ td span:not(.severity) {
   font-weight: 800;
 }
 
-.severity--leve {
+.severity--light {
   color: #236043;
   background: #dff3e9;
 }
 
-.severity--moderado {
+.severity--moderate {
   color: #72540b;
   background: #fff1c8;
 }
 
-.severity--grave {
+.severity--severe {
   color: #8b3030;
   background: #fde2e2;
+}
+
+.severity--fatal {
+  color: #6f1d3d;
+  background: #f5d8e5;
+}
+
+.severity--unknown {
+  color: #455468;
+  background: #e8edf2;
 }
 
 .app-footer {

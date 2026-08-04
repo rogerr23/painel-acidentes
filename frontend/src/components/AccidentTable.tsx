@@ -1,19 +1,12 @@
 import type { Acidente } from "../types/acidente";
+import { formatarData, formatarHora } from "../utils/formatters";
+import { obterClasseGravidade } from "../utils/severity";
 
 interface AccidentTableProps {
   acidentes: Acidente[];
   total: number;
   carregando: boolean;
   erro: string | null;
-}
-
-function formatarData(data: string): string {
-  const [ano, mes, dia] = data.split("-");
-  return ano && mes && dia ? `${dia}/${mes}/${ano}` : data;
-}
-
-function formatarHora(hora: string): string {
-  return hora.slice(0, 5);
 }
 
 export function AccidentTable({
@@ -83,7 +76,7 @@ export function AccidentTable({
                   </td>
                   <td>
                     <span
-                      className={`severity severity--${acidente.gravidade.toLowerCase()}`}
+                      className={`severity ${obterClasseGravidade(acidente.gravidade)}`}
                     >
                       {acidente.gravidade}
                     </span>

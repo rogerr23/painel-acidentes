@@ -1,18 +1,11 @@
 import type { DashboardResumo } from "../types/acidente";
+import { normalizarGravidade } from "../utils/severity";
 import { IndicatorCard } from "./IndicatorCard";
 
 interface DashboardIndicatorsProps {
   resumo: DashboardResumo | null;
   carregando: boolean;
   erro: string | null;
-}
-
-function normalizarGravidade(valor: string): string {
-  return valor
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
 }
 
 function quantidadePorGravidade(

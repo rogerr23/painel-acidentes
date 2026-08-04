@@ -7,6 +7,9 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 import type { AcidenteMapa } from "../types/acidente";
 import { obterEstadoVisualMapa } from "../hooks/estadoConsultaMapa";
+import { validarCoordenadas } from "../utils/coordinates";
+import { formatarData, formatarHora } from "../utils/formatters";
+import { obterClasseGravidade } from "../utils/severity";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -27,35 +30,15 @@ interface AcidenteMapeado {
 
 const CENTRO_RIO_DE_JANEIRO: [number, number] = [-22.9068, -43.1729];
 
-function converterCoordenada(
-  valor: string | number | null | undefined,
-): number | null {
-  if (valor === null || valor === undefined || String(valor).trim() === "") {
-    return null;
-  }
-
-  const coordenada = Number(valor);
-  return Number.isFinite(coordenada) ? coordenada : null;
-}
-
 function mapearAcidente(acidente: AcidenteMapa): AcidenteMapeado | null {
-  const latitude = converterCoordenada(acidente.latitude);
-  const longitude = converterCoordenada(acidente.longitude);
-
-  if (
-    latitude === null ||
-    longitude === null ||
-    latitude < -90 ||
-    latitude > 90 ||
-    longitude < -180 ||
-    longitude > 180
-  ) {
+  const posicao = validarCoordenadas(acidente.latitude, acidente.longitude);
+  if (!posicao) {
     return null;
   }
 
   return {
     acidente,
-    posicao: [latitude, longitude],
+    posicao,
   };
 }
 
@@ -77,15 +60,6 @@ function AjustarVisualizacao({ acidentes }: { acidentes: AcidenteMapeado[] }) {
   }, [acidentes, mapa]);
 
   return null;
-}
-
-function formatarData(data: string): string {
-  const [ano, mes, dia] = data.split("-");
-  return ano && mes && dia ? `${dia}/${mes}/${ano}` : data;
-}
-
-function formatarHora(hora: string): string {
-  return hora.slice(0, 5);
 }
 
 export function AccidentMap({
@@ -155,7 +129,13 @@ export function AccidentMap({
                   <dl>
                     <div>
                       <dt>Gravidade</dt>
-                      <dd>{acidente.gravidade}</dd>
+                      <dd>
+                        <span
+                          className={`severity ${obterClasseGravidade(acidente.gravidade)}`}
+                        >
+                          {acidente.gravidade}
+                        </span>
+                      </dd>
                     </div>
                     <div>
                       <dt>Bairro</dt>
