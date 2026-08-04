@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { AccidentTable } from "./components/AccidentTable";
 import { AccidentMap } from "./components/AccidentMap";
 import { DashboardHeader } from "./components/DashboardHeader";
@@ -5,16 +7,18 @@ import { FilterPanel } from "./components/FilterPanel";
 import { IndicatorCard } from "./components/IndicatorCard";
 import { indicadoresSimulados } from "./data/mockData";
 import { useAcidentes } from "./hooks/useAcidentes";
+import type { FiltrosAcidente } from "./types/acidente";
 
 export function App() {
-  const { acidentes, total, carregando, erro } = useAcidentes();
+  const [filtros, setFiltros] = useState<FiltrosAcidente>({});
+  const { acidentes, total, carregando, erro } = useAcidentes(filtros);
 
   return (
     <div className="app-shell">
       <DashboardHeader />
 
       <main className="dashboard">
-        <FilterPanel />
+        <FilterPanel onAplicar={setFiltros} />
 
         <section className="indicator-grid" aria-label="Indicadores gerais">
           {indicadoresSimulados.map((indicador) => (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { acidenteService } from "../services/acidenteService";
-import type { Acidente } from "../types/acidente";
+import type { Acidente, FiltrosAcidente } from "../types/acidente";
 
 interface UseAcidentesResult {
   acidentes: Acidente[];
@@ -10,7 +10,9 @@ interface UseAcidentesResult {
   erro: string | null;
 }
 
-export function useAcidentes(): UseAcidentesResult {
+export function useAcidentes(
+  filtros: FiltrosAcidente = {},
+): UseAcidentesResult {
   const [acidentes, setAcidentes] = useState<Acidente[]>([]);
   const [total, setTotal] = useState(0);
   const [carregando, setCarregando] = useState(true);
@@ -19,9 +21,17 @@ export function useAcidentes(): UseAcidentesResult {
   useEffect(() => {
     let ativo = true;
 
+    setCarregando(true);
+    setErro(null);
+    setAcidentes([]);
+    setTotal(0);
+
     async function carregarAcidentes() {
       try {
-        const resposta = await acidenteService.listar();
+        const resposta = await acidenteService.listar({
+          ...filtros,
+          pagina: 1,
+        });
 
         if (ativo) {
           setAcidentes(resposta.items);
@@ -47,7 +57,7 @@ export function useAcidentes(): UseAcidentesResult {
     return () => {
       ativo = false;
     };
-  }, []);
+  }, [filtros]);
 
   return { acidentes, total, carregando, erro };
 }
