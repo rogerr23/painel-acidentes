@@ -3,9 +3,12 @@ import { DashboardHeader } from "./components/DashboardHeader";
 import { FilterPanel } from "./components/FilterPanel";
 import { IndicatorCard } from "./components/IndicatorCard";
 import { MapPlaceholder } from "./components/MapPlaceholder";
-import { acidentesSimulados, indicadoresSimulados } from "./data/mockData";
+import { indicadoresSimulados } from "./data/mockData";
+import { useAcidentes } from "./hooks/useAcidentes";
 
 export function App() {
+  const { acidentes, total, carregando, erro } = useAcidentes();
+
   return (
     <div className="app-shell">
       <DashboardHeader />
@@ -21,12 +24,17 @@ export function App() {
 
         <section className="dashboard-grid">
           <MapPlaceholder />
-          <AccidentTable acidentes={acidentesSimulados} />
+          <AccidentTable
+            acidentes={acidentes}
+            total={total}
+            carregando={carregando}
+            erro={erro}
+          />
         </section>
       </main>
 
       <footer className="app-footer">
-        Dados simulados para construção da interface.
+        Indicadores simulados para construção da interface.
       </footer>
     </div>
   );
