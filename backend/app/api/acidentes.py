@@ -5,11 +5,12 @@ from fastapi import APIRouter, HTTPException, Path, Query, status
 from backend.app.api.dependencies import SessionDependency
 from backend.app.models.acidente import Acidente
 from backend.app.schemas.acidente import (
+    AcidenteMapaResponse,
     AcidenteResponse,
     AcidentesPaginados,
     OpcoesFiltrosAcidente,
 )
-from backend.app.schemas.filtros import ConsultaAcidentes
+from backend.app.schemas.filtros import ConsultaAcidentes, FiltrosAcidente
 from backend.app.services.acidente_service import AcidenteService
 
 
@@ -37,6 +38,15 @@ def listar_opcoes_filtros(
 ) -> OpcoesFiltrosAcidente:
     """Retorna os valores disponíveis para os filtros da interface."""
     return service.listar_opcoes_filtros(session)
+
+
+@router.get("/mapa", response_model=list[AcidenteMapaResponse])
+def listar_acidentes_mapa(
+    session: SessionDependency,
+    filtros: Annotated[FiltrosAcidente, Query()],
+) -> list[AcidenteMapaResponse]:
+    """Lista, sem paginação, os campos necessários para o mapa."""
+    return service.listar_mapa(session, filtros)
 
 
 @router.get("/{acidente_id}", response_model=AcidenteResponse)

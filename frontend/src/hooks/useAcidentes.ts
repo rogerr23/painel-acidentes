@@ -12,6 +12,7 @@ interface UseAcidentesResult {
 
 export function useAcidentes(
   filtros: FiltrosAcidente = {},
+  pagina = 1,
 ): UseAcidentesResult {
   const [acidentes, setAcidentes] = useState<Acidente[]>([]);
   const [total, setTotal] = useState(0);
@@ -30,7 +31,7 @@ export function useAcidentes(
       try {
         const resposta = await acidenteService.listar({
           ...filtros,
-          pagina: 1,
+          pagina,
         });
 
         if (ativo) {
@@ -57,7 +58,7 @@ export function useAcidentes(
     return () => {
       ativo = false;
     };
-  }, [filtros]);
+  }, [filtros, pagina]);
 
   return { acidentes, total, carregando, erro };
 }

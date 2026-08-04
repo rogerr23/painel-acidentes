@@ -6,12 +6,14 @@ import { DashboardHeader } from "./components/DashboardHeader";
 import { DashboardIndicators } from "./components/DashboardIndicators";
 import { FilterPanel } from "./components/FilterPanel";
 import { useAcidentes } from "./hooks/useAcidentes";
+import { useAcidentesMapa } from "./hooks/useAcidentesMapa";
 import { useDashboardResumo } from "./hooks/useDashboardResumo";
 import type { FiltrosAcidente } from "./types/acidente";
 
 export function App() {
   const [filtros, setFiltros] = useState<FiltrosAcidente>({});
   const { acidentes, total, carregando, erro } = useAcidentes(filtros);
+  const acidentesMapa = useAcidentesMapa(filtros);
   const resumo = useDashboardResumo(filtros);
 
   return (
@@ -24,7 +26,7 @@ export function App() {
         <DashboardIndicators {...resumo} />
 
         <section className="dashboard-grid">
-          <AccidentMap acidentes={acidentes} />
+          <AccidentMap acidentes={acidentesMapa} />
           <AccidentTable
             acidentes={acidentes}
             total={total}

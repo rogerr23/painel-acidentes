@@ -5,7 +5,7 @@ import markerIconRetina from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
-import type { Acidente } from "../types/acidente";
+import type { AcidenteMapa } from "../types/acidente";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -14,11 +14,11 @@ L.Icon.Default.mergeOptions({
 });
 
 interface AccidentMapProps {
-  acidentes: Acidente[];
+  acidentes: AcidenteMapa[];
 }
 
 interface AcidenteMapeado {
-  acidente: Acidente;
+  acidente: AcidenteMapa;
   posicao: [number, number];
 }
 
@@ -35,7 +35,7 @@ function converterCoordenada(
   return Number.isFinite(coordenada) ? coordenada : null;
 }
 
-function mapearAcidente(acidente: Acidente): AcidenteMapeado | null {
+function mapearAcidente(acidente: AcidenteMapa): AcidenteMapeado | null {
   const latitude = converterCoordenada(acidente.latitude);
   const longitude = converterCoordenada(acidente.longitude);
 

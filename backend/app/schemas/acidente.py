@@ -40,6 +40,21 @@ class AcidenteResponse(AcidenteBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AcidenteMapaResponse(BaseModel):
+    """Campos necessários para representar um acidente no mapa."""
+
+    id: int
+    latitude: Decimal
+    longitude: Decimal
+    tipo: str
+    gravidade: str
+    bairro: str
+    data: date
+    hora: time
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class AcidentesPaginados(BaseModel):
     """Página de acidentes acompanhada dos metadados de navegação."""
 

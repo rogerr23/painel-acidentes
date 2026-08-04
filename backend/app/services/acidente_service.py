@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from backend.app.models.acidente import Acidente
 from backend.app.repositories.acidente_repository import AcidenteRepository
 from backend.app.schemas.acidente import (
+    AcidenteMapaResponse,
     AcidenteResponse,
     AcidentesPaginados,
     OpcoesFiltrosAcidente,
@@ -39,6 +40,16 @@ class AcidenteService:
             por_pagina=por_pagina,
             total=total,
         )
+
+    def listar_mapa(
+        self,
+        session: Session,
+        filtros: FiltrosAcidente,
+    ) -> list[AcidenteMapaResponse]:
+        return [
+            AcidenteMapaResponse.model_validate(acidente)
+            for acidente in self.repository.listar_mapa(session, filtros)
+        ]
 
     def listar_opcoes_filtros(
         self,

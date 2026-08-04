@@ -140,6 +140,62 @@ def test_pagina_acidentes(
     }
 
 
+def test_mapa_retorna_todos_os_acidentes_filtrados_sem_paginacao(
+    client: TestClient,
+    acidente_factory: Any,
+) -> None:
+    esperados = [
+        acidente_factory(
+            data=date(2026, 1, dia),
+            bairro="Centro",
+            gravidade="Grave",
+            tipo="Colisão",
+        )
+        for dia in range(1, 5)
+    ]
+    acidente_factory(
+        data=date(2026, 2, 1),
+        bairro="Tijuca",
+        gravidade="Leve",
+        tipo="Atropelamento",
+    )
+    filtros = {
+        "bairro": "centro",
+        "gravidade": "grave",
+        "tipo": "colisão",
+        "data_inicio": "2026-01-01",
+        "data_fim": "2026-01-31",
+    }
+
+    pagina = client.get(
+        "/acidentes",
+        params={**filtros, "pagina": 2, "por_pagina": 2},
+    )
+    mapa = client.get("/acidentes/mapa", params=filtros)
+
+    assert pagina.status_code == 200
+    assert [item["id"] for item in pagina.json()["items"]] == [
+        esperados[2].id,
+        esperados[3].id,
+    ]
+    assert pagina.json()["total"] == 4
+
+    assert mapa.status_code == 200
+    assert [item["id"] for item in mapa.json()] == [
+        acidente.id for acidente in esperados
+    ]
+    assert set(mapa.json()[0]) == {
+        "id",
+        "latitude",
+        "longitude",
+        "tipo",
+        "gravidade",
+        "bairro",
+        "data",
+        "hora",
+    }
+
+
 def test_rejeita_paginacao_invalida(client: TestClient) -> None:
     response = client.get(
         "/acidentes",

@@ -1,4 +1,5 @@
 import type {
+  AcidenteMapa,
   AcidentesPaginados,
   BairroResumo,
   ConsultaAcidentes,
@@ -28,6 +29,13 @@ export const acidenteService = {
     return apiGet<AcidentesPaginados>(
       "/acidentes",
       criarParametros(consulta),
+    );
+  },
+
+  listarMapa(filtros: FiltrosAcidente = {}): Promise<AcidenteMapa[]> {
+    return apiGet<AcidenteMapa[]>(
+      "/acidentes/mapa",
+      criarParametros(filtros),
     );
   },
 

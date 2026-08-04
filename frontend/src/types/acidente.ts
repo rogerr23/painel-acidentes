@@ -10,6 +10,17 @@ export interface Acidente {
   longitude?: string;
 }
 
+export interface AcidenteMapa {
+  id: number;
+  data: string;
+  hora: string;
+  tipo: string;
+  gravidade: string;
+  bairro: string;
+  latitude: string;
+  longitude: string;
+}
+
 export interface FiltrosAcidente {
   bairro?: string;
   gravidade?: string;

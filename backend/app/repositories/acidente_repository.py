@@ -33,6 +33,17 @@ class AcidenteRepository:
         return session.scalar(consulta) or 0
 
     @staticmethod
+    def listar_mapa(
+        session: Session,
+        filtros: FiltrosAcidente,
+    ) -> list[Acidente]:
+        consulta = aplicar_filtros(
+            select(Acidente).order_by(Acidente.id),
+            filtros,
+        )
+        return list(session.scalars(consulta).all())
+
+    @staticmethod
     def listar_valores_distintos(
         session: Session,
         campo: str,

@@ -197,6 +197,7 @@ ainda não possui uma regra para identificar acidentes duplicados.
 | Método | Caminho | Descrição |
 |---|---|---|
 | `GET` | `/acidentes` | Lista os acidentes |
+| `GET` | `/acidentes/mapa` | Lista, sem paginação, os dados necessários para o mapa |
 | `GET` | `/acidentes/filtros/opcoes` | Lista bairros, tipos e gravidades disponíveis |
 | `GET` | `/acidentes/{id}` | Busca um acidente pelo ID |
 | `GET` | `/dashboard/resumo` | Retorna totais por tipo e gravidade |
@@ -222,7 +223,8 @@ GET /acidentes/filtros/opcoes
 
 ## Filtros
 
-Os endpoints `/acidentes`, `/dashboard/resumo` e `/dashboard/bairros` aceitam:
+Os endpoints `/acidentes`, `/acidentes/mapa`, `/dashboard/resumo` e
+`/dashboard/bairros` aceitam:
 
 | Parâmetro | Descrição | Exemplo |
 |---|---|---|
@@ -238,6 +240,10 @@ parâmetros são opcionais e podem ser combinados:
 ```http
 GET /acidentes?bairro=centro&gravidade=leve&tipo=colisão&data_inicio=2026-01-01&data_fim=2026-12-31
 ```
+
+`GET /acidentes/mapa` aceita os mesmos filtros e retorna todos os registros
+correspondentes. Para volumes muito grandes, uma estratégia específica de
+carregamento geográfico deverá ser avaliada futuramente.
 
 Quando as duas datas forem informadas, `data_inicio` deverá ser anterior ou
 igual a `data_fim`.
