@@ -3,15 +3,16 @@ import { useState } from "react";
 import { AccidentTable } from "./components/AccidentTable";
 import { AccidentMap } from "./components/AccidentMap";
 import { DashboardHeader } from "./components/DashboardHeader";
+import { DashboardIndicators } from "./components/DashboardIndicators";
 import { FilterPanel } from "./components/FilterPanel";
-import { IndicatorCard } from "./components/IndicatorCard";
-import { indicadoresSimulados } from "./data/mockData";
 import { useAcidentes } from "./hooks/useAcidentes";
+import { useDashboardResumo } from "./hooks/useDashboardResumo";
 import type { FiltrosAcidente } from "./types/acidente";
 
 export function App() {
   const [filtros, setFiltros] = useState<FiltrosAcidente>({});
   const { acidentes, total, carregando, erro } = useAcidentes(filtros);
+  const resumo = useDashboardResumo(filtros);
 
   return (
     <div className="app-shell">
@@ -20,11 +21,7 @@ export function App() {
       <main className="dashboard">
         <FilterPanel onAplicar={setFiltros} />
 
-        <section className="indicator-grid" aria-label="Indicadores gerais">
-          {indicadoresSimulados.map((indicador) => (
-            <IndicatorCard key={indicador.label} {...indicador} />
-          ))}
-        </section>
+        <DashboardIndicators {...resumo} />
 
         <section className="dashboard-grid">
           <AccidentMap acidentes={acidentes} />
@@ -37,9 +34,7 @@ export function App() {
         </section>
       </main>
 
-      <footer className="app-footer">
-        Indicadores simulados para construção da interface.
-      </footer>
+      <footer className="app-footer">Painel de Acidentes</footer>
     </div>
   );
 }
