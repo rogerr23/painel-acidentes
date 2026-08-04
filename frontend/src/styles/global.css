@@ -26,6 +26,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 button,
@@ -135,7 +136,7 @@ h2 {
 
 .filter-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(140px, 1fr)) auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(140px, auto);
   align-items: end;
   gap: 14px;
 }
@@ -326,6 +327,7 @@ h2 {
 .dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: start;
   gap: 24px;
 }
 
@@ -396,7 +398,11 @@ h2 {
 }
 
 .table-wrapper {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .list-state {
@@ -456,6 +462,7 @@ h2 {
 
 table {
   width: 100%;
+  min-width: 620px;
   border-collapse: collapse;
   font-size: 0.82rem;
 }
@@ -520,6 +527,12 @@ td span:not(.severity) {
   text-align: center;
 }
 
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 1100px) {
   .filter-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -529,8 +542,19 @@ td span:not(.severity) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  .map-panel,
+  .list-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .leaflet-map {
+    height: 380px;
   }
 }
 
@@ -551,6 +575,7 @@ td span:not(.severity) {
   }
 
   .panel {
+    min-width: 0;
     padding: 18px;
     border-radius: 13px;
   }
@@ -566,16 +591,68 @@ td span:not(.severity) {
 
   .section-heading {
     align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .filter-grid .button--primary {
+    width: 100%;
   }
 
   .leaflet-map {
+    width: 100%;
     min-height: 300px;
     height: 55vh;
     max-height: 405px;
   }
 
+  .table-wrapper {
+    margin-inline: -18px;
+    width: calc(100% + 36px);
+    max-width: calc(100% + 36px);
+    padding-inline: 18px;
+  }
+
+  table {
+    min-width: 640px;
+  }
+
   th,
   td {
-    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  td:nth-child(3) {
+    white-space: normal;
+  }
+
+  .list-state,
+  .indicator-state {
+    min-height: 130px;
+    padding: 24px 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-header__content,
+  .dashboard,
+  .app-footer {
+    width: calc(100% - 20px);
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .panel {
+    padding: 15px;
+  }
+
+  .table-wrapper {
+    margin-inline: -15px;
+    width: calc(100% + 30px);
+    max-width: calc(100% + 30px);
+    padding-inline: 15px;
   }
 }
