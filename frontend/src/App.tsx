@@ -13,7 +13,7 @@ import type { FiltrosAcidente } from "./types/acidente";
 export function App() {
   const [filtros, setFiltros] = useState<FiltrosAcidente>({});
   const { acidentes, total, carregando, erro } = useAcidentes(filtros);
-  const acidentesMapa = useAcidentesMapa(filtros);
+  const mapa = useAcidentesMapa(filtros);
   const resumo = useDashboardResumo(filtros);
 
   return (
@@ -26,7 +26,11 @@ export function App() {
         <DashboardIndicators {...resumo} />
 
         <section className="dashboard-grid">
-          <AccidentMap acidentes={acidentesMapa} />
+          <AccidentMap
+            acidentes={mapa.acidentes}
+            carregando={mapa.carregando}
+            erro={mapa.erro}
+          />
           <AccidentTable
             acidentes={acidentes}
             total={total}

@@ -356,6 +356,10 @@ h2 {
   z-index: 0;
 }
 
+.map-state {
+  min-height: 405px;
+}
+
 .map-popup {
   min-width: 180px;
 }
@@ -556,6 +560,10 @@ td span:not(.severity) {
   .leaflet-map {
     height: 380px;
   }
+
+  .map-state {
+    min-height: 380px;
+  }
 }
 
 @media (max-width: 680px) {
@@ -606,6 +614,12 @@ td span:not(.severity) {
     max-height: 405px;
   }
 
+  .map-state {
+    min-height: 300px;
+    height: 55vh;
+    max-height: 405px;
+  }
+
   .table-wrapper {
     margin-inline: -18px;
     width: calc(100% + 36px);
@@ -626,7 +640,7 @@ td span:not(.severity) {
     white-space: normal;
   }
 
-  .list-state,
+  .list-state:not(.map-state),
   .indicator-state {
     min-height: 130px;
     padding: 24px 18px;

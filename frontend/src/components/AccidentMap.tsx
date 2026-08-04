@@ -6,6 +6,7 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 import type { AcidenteMapa } from "../types/acidente";
+import { obterEstadoVisualMapa } from "../hooks/estadoConsultaMapa";
 
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -15,6 +16,8 @@ L.Icon.Default.mergeOptions({
 
 interface AccidentMapProps {
   acidentes: AcidenteMapa[];
+  carregando: boolean;
+  erro: string | null;
 }
 
 interface AcidenteMapeado {
@@ -85,12 +88,21 @@ function formatarHora(hora: string): string {
   return hora.slice(0, 5);
 }
 
-export function AccidentMap({ acidentes }: AccidentMapProps) {
+export function AccidentMap({
+  acidentes,
+  carregando,
+  erro,
+}: AccidentMapProps) {
   const acidentesMapeados = useMemo(
     () => acidentes.map(mapearAcidente).filter((item) => item !== null),
     [acidentes],
   );
   const registrosIgnorados = acidentes.length - acidentesMapeados.length;
+  const estadoVisual = obterEstadoVisualMapa(
+    carregando,
+    erro,
+    acidentes.length,
+  );
 
   return (
     <section className="panel map-panel" aria-labelledby="map-title">
@@ -99,53 +111,73 @@ export function AccidentMap({ acidentes }: AccidentMapProps) {
           <p className="eyebrow">Distribuição geográfica</p>
           <h2 id="map-title">Mapa de acidentes</h2>
         </div>
-        <span className="status-pill">
-          {acidentesMapeados.length} no mapa
-        </span>
+        {estadoVisual === "dados" && (
+          <span className="status-pill">
+            {acidentesMapeados.length} no mapa
+          </span>
+        )}
       </div>
 
-      <MapContainer
-        center={CENTRO_RIO_DE_JANEIRO}
-        zoom={11}
-        scrollWheelZoom
-        className="leaflet-map"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <AjustarVisualizacao acidentes={acidentesMapeados} />
+      {estadoVisual === "carregando" ? (
+        <div className="list-state map-state" role="status" aria-live="polite">
+          <span className="loading-spinner" aria-hidden="true" />
+          <strong>Carregando acidentes no mapa...</strong>
+          <p>Aguarde enquanto consultamos os registros.</p>
+        </div>
+      ) : estadoVisual === "erro" ? (
+        <div className="list-state list-state--error map-state" role="alert">
+          <strong>Não foi possível carregar os acidentes no mapa.</strong>
+          <p>{erro}</p>
+        </div>
+      ) : estadoVisual === "vazio" ? (
+        <div className="list-state map-state" role="status">
+          <strong>Nenhum acidente encontrado</strong>
+          <p>Nenhum acidente encontrado para os filtros selecionados.</p>
+        </div>
+      ) : (
+        <MapContainer
+          center={CENTRO_RIO_DE_JANEIRO}
+          zoom={11}
+          scrollWheelZoom
+          className="leaflet-map"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <AjustarVisualizacao acidentes={acidentesMapeados} />
 
-        {acidentesMapeados.map(({ acidente, posicao }) => (
-          <Marker key={acidente.id} position={posicao}>
-            <Popup>
-              <div className="map-popup">
-                <strong>{acidente.tipo}</strong>
-                <dl>
-                  <div>
-                    <dt>Gravidade</dt>
-                    <dd>{acidente.gravidade}</dd>
-                  </div>
-                  <div>
-                    <dt>Bairro</dt>
-                    <dd>{acidente.bairro}</dd>
-                  </div>
-                  <div>
-                    <dt>Data</dt>
-                    <dd>{formatarData(acidente.data)}</dd>
-                  </div>
-                  <div>
-                    <dt>Hora</dt>
-                    <dd>{formatarHora(acidente.hora)}</dd>
-                  </div>
-                </dl>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          {acidentesMapeados.map(({ acidente, posicao }) => (
+            <Marker key={acidente.id} position={posicao}>
+              <Popup>
+                <div className="map-popup">
+                  <strong>{acidente.tipo}</strong>
+                  <dl>
+                    <div>
+                      <dt>Gravidade</dt>
+                      <dd>{acidente.gravidade}</dd>
+                    </div>
+                    <div>
+                      <dt>Bairro</dt>
+                      <dd>{acidente.bairro}</dd>
+                    </div>
+                    <div>
+                      <dt>Data</dt>
+                      <dd>{formatarData(acidente.data)}</dd>
+                    </div>
+                    <div>
+                      <dt>Hora</dt>
+                      <dd>{formatarHora(acidente.hora)}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      )}
 
-      {registrosIgnorados > 0 && (
+      {estadoVisual === "dados" && registrosIgnorados > 0 && (
         <p className="map-warning" role="status">
           {registrosIgnorados}{" "}
           {registrosIgnorados === 1

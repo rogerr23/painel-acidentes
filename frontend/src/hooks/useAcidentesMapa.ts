@@ -1,24 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 
 import { acidenteService } from "../services/acidenteService";
 import type { AcidenteMapa, FiltrosAcidente } from "../types/acidente";
+import {
+  estadoInicialConsultaMapa,
+  obterMensagemErroMapa,
+  reduzirEstadoConsultaMapa,
+  type EstadoConsultaMapa,
+} from "./estadoConsultaMapa";
 
 export function useAcidentesMapa(
   filtros: FiltrosAcidente = {},
-): AcidenteMapa[] {
-  const [acidentes, setAcidentes] = useState<AcidenteMapa[]>([]);
+): EstadoConsultaMapa {
+  const [estado, dispatch] = useReducer(
+    reduzirEstadoConsultaMapa,
+    estadoInicialConsultaMapa,
+  );
 
   useEffect(() => {
     let ativo = true;
+    dispatch({ tipo: "iniciar" });
 
     async function carregarAcidentes() {
       try {
         const resposta = await acidenteService.listarMapa(filtros);
         if (ativo) {
-          setAcidentes(resposta);
+          dispatch({ tipo: "sucesso", acidentes: resposta });
         }
-      } catch {
-        // Estados específicos do mapa serão tratados em uma etapa futura.
+      } catch (error) {
+        if (ativo) {
+          dispatch({ tipo: "falha", erro: obterMensagemErroMapa(error) });
+        }
       }
     }
 
@@ -29,5 +41,5 @@ export function useAcidentesMapa(
     };
   }, [filtros]);
 
-  return acidentes;
+  return estado;
 }
