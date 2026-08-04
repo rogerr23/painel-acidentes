@@ -11,10 +11,14 @@ import { validarCoordenadas } from "../utils/coordinates";
 import { formatarData, formatarHora } from "../utils/formatters";
 import { obterClasseGravidade } from "../utils/severity";
 
-L.Icon.Default.mergeOptions({
+const ICONE_ACIDENTE = L.icon({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIconRetina,
   shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 });
 
 interface AccidentMapProps {
@@ -122,7 +126,11 @@ export function AccidentMap({
           <AjustarVisualizacao acidentes={acidentesMapeados} />
 
           {acidentesMapeados.map(({ acidente, posicao }) => (
-            <Marker key={acidente.id} position={posicao}>
+            <Marker
+              key={acidente.id}
+              position={posicao}
+              icon={ICONE_ACIDENTE}
+            >
               <Popup>
                 <div className="map-popup">
                   <strong>{acidente.tipo}</strong>
