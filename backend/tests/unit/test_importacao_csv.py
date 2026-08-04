@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -43,6 +44,15 @@ def test_importa_csv_valido(
     assert resultado.importados == 1
     assert resultado.ignorados == 0
     assert total_banco == 1
+
+
+def test_converte_coordenada_com_virgula_decimal() -> None:
+    coordenada = ImportacaoCSVService._converter_coordenada(
+        "-22,905411",
+        "latitude",
+    )
+
+    assert coordenada == Decimal("-22.905411")
 
 
 def test_ignora_linha_invalida_e_importa_valida(

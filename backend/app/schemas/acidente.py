@@ -32,20 +32,12 @@ class AcidenteCreate(AcidenteBase):
     """Dados necessários para cadastrar um acidente."""
 
 
-class AcidenteResponse(AcidenteBase):
-    """Representação de um acidente devolvida pela API."""
-
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
-
-
 class AcidenteMapaResponse(BaseModel):
-    """Campos necessários para representar um acidente no mapa."""
+    """Representação numérica de um acidente utilizada pelo mapa."""
 
     id: int
-    latitude: Decimal
-    longitude: Decimal
+    latitude: float
+    longitude: float
     tipo: str
     gravidade: str
     bairro: str
@@ -53,6 +45,12 @@ class AcidenteMapaResponse(BaseModel):
     hora: time
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AcidenteResponse(AcidenteMapaResponse):
+    """Representação completa de um acidente devolvida pela API."""
+
+    logradouro: str
 
 
 class AcidentesPaginados(BaseModel):

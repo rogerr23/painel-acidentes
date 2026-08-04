@@ -33,6 +33,10 @@ def test_lista_acidentes_ordenados(
         segundo.id,
     ]
     assert payload["items"][0]["logradouro"] == "Avenida Rio Branco"
+    assert isinstance(payload["items"][0]["latitude"], float)
+    assert isinstance(payload["items"][0]["longitude"], float)
+    assert '"latitude":"' not in response.text
+    assert '"longitude":"' not in response.text
     assert payload["total"] == 2
     assert payload["total_paginas"] == 1
 
@@ -48,6 +52,10 @@ def test_busca_acidente_por_id(
     assert response.status_code == 200
     assert response.json()["id"] == acidente.id
     assert response.json()["bairro"] == "Copacabana"
+    assert isinstance(response.json()["latitude"], float)
+    assert isinstance(response.json()["longitude"], float)
+    assert '"latitude":"' not in response.text
+    assert '"longitude":"' not in response.text
 
 
 def test_busca_id_inexistente_retorna_404(client: TestClient) -> None:
@@ -118,8 +126,8 @@ def test_pagina_acidentes(
                 "gravidade": "Leve",
                 "bairro": "Centro",
                 "logradouro": "Avenida Rio Branco",
-                "latitude": "-22.905411",
-                "longitude": "-43.177580",
+                "latitude": -22.905411,
+                "longitude": -43.17758,
             },
             {
                 "id": acidentes[3].id,
@@ -129,8 +137,8 @@ def test_pagina_acidentes(
                 "gravidade": "Leve",
                 "bairro": "Centro",
                 "logradouro": "Avenida Rio Branco",
-                "latitude": "-22.905411",
-                "longitude": "-43.177580",
+                "latitude": -22.905411,
+                "longitude": -43.17758,
             },
         ],
         "pagina": 2,
@@ -184,6 +192,10 @@ def test_mapa_retorna_todos_os_acidentes_filtrados_sem_paginacao(
     assert [item["id"] for item in mapa.json()] == [
         acidente.id for acidente in esperados
     ]
+    assert all(isinstance(item["latitude"], float) for item in mapa.json())
+    assert all(isinstance(item["longitude"], float) for item in mapa.json())
+    assert '"latitude":"' not in mapa.text
+    assert '"longitude":"' not in mapa.text
     assert set(mapa.json()[0]) == {
         "id",
         "latitude",
